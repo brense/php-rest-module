@@ -5,6 +5,9 @@ namespace rest;
 use rest\iResource;
 use rest\ResourceCollection;
 
+/**
+ * Resource controller interface
+ */
 interface iResourceController {
     
     public function retrieve($resourceId);

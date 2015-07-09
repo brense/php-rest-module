@@ -2,6 +2,9 @@
 
 namespace rest;
 
+/**
+ * An iterator for a collection of resources, see also: iResource
+ */
 class ResourceCollection implements \Iterator {
     
     private $_position = 0;

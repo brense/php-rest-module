@@ -18,7 +18,7 @@ $service = new Service(array(
     'index.php/' => new Client()
 ));
 
-$bootstrapPath = '/rest_framework';
+$bootstrapPath = '/rest_framework'; // e.g. when the full path is http://www.mydomain.com/rest_framework
 $req = Request::instance($bootstrapPath);
 $response = $service->resolve($req);
 echo json_encode($response);

@@ -14,7 +14,7 @@ Usage example:
 	
 	echo $response;
     
-Client:
+Model example:
 
     class Client implements iResourceModel {
 		private $_name = 'foobar';
@@ -26,10 +26,22 @@ Client:
     	public function toArray(){
     		return array('name' => $this->_name);
 		}
+		
+		public function __get($property){
+			// implement
+		}
+		
+		public function __set($property, $value){
+			// implement
+		}
+		
+		public function __isset($property){
+			// implement
+		}
     
     }
     
-ClientController:
+Controller example:
 
     class ClientController implements iResourceController {
 

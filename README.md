@@ -3,30 +3,24 @@ A tiny framework to quickly create a REST API in PHP
 
 Usage example:
 
-    $service = new Service(array(
-        'client/' => new Client(),
-        'project/' => new Project(),
-        'invoice/' => new Invoice()
-    ));
+	$service = new Service();
+	$clientResource = new Resource('/client', new Client(), new ClientController);
+	$clientResource->addCustomRoute('GET', '/find', array(new ClientController, 'find'), array('name'));
+	$service->addResource($clientResource);
 
-    $req = Request::instance();
-    $response = $service->resolve($req);
-    
-    echo json_encode($response);
+	$request = Request::current();
+	$request->setBootstrapPath('/service');
+	$response = $service->resolve($request);
+	
+	echo $response;
     
 Client:
 
-    class Client implements iResource {
-    
-		private $_controller;
+    class Client implements iResourceModel {
 		private $_name = 'foobar';
-    
-    	public function __construct() {
-    		$this->_controller = new ClientController();
-    	}
-
-		public function getController() {
-			return $this->_controller;
+	
+		public function __construct($name){
+			$this->_name = $name;
 		}
 	
     	public function toArray(){
@@ -42,6 +36,11 @@ ClientController:
     	public function retrieve($resourceId) {
     		// get client from database
     		return new Client();
+    	}
+    	
+    	public function find($name) {
+    		// get client from database
+    		return new Client($name);
     	}
       
     	public function listAll() {

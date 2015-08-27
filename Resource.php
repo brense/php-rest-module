@@ -17,8 +17,11 @@ class Resource {
 	$this->_controller = $controller;
     }
 
-    public function addCustomRoute($path, callable $callback, $options) {
-	$this->_customRoutes[$path] = array(
+    public function addCustomRoute($method, $path, callable $callback, $options) {
+	if(!in_array($this->_customRoutes[$method])){
+	    $this->_customRoutes[$method] = array();
+	}
+	$this->_customRoutes[$method][$path] = array(
 	    'callback' => $callback,
 	    'options' => $options
 	);
@@ -27,7 +30,7 @@ class Resource {
     public function matchCustomRoute(Request $request) {
 	$path = substr($request->path, strlen($this->_path));
 	if (strlen($path) > 0) {
-	    if (in_array($path, $this->_customRoutes)) {
+	    if (isset($this->_customRoutes[$request->method]) && in_array($path, $this->_customRoutes[$request->method])) {
 		return $this->_customRoutes[$path];
 	    } else {
 		throw new \Exception('No custom route was found for \'' . $path . '\'');

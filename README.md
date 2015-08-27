@@ -9,7 +9,7 @@ Usage example:
 	$service->addResource($clientResource);
 
 	$request = Request::current();
-	$request->setBootstrapPath('/service');
+	$request->setBootstrapPath('/service'); // e.g. when the full path is http://www.mydomain.com/service
 	$response = $service->resolve($request);
 	
 	echo $response;

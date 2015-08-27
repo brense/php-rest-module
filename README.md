@@ -45,7 +45,6 @@ ClientController:
       
     	public function listAll() {
     		// get all clients from database
-    		return new ResourceCollection(array(new Client()));
     	}
       
     	public function replace($resourceId, iResource $resource) {

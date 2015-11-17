@@ -8,6 +8,7 @@ class Request {
     private $_method;
     private $_path;
     private $_body;
+    private $_parameters = array(); // Query parameters not yet implemented
     private $_bootstrap;
 
     private function __construct() {
@@ -43,10 +44,11 @@ class Request {
 
     private function parsePath() {
 	$scriptName = filter_input(INPUT_SERVER, 'REQUEST_URI');
+	$path = $scriptName;
 	if (strpos($scriptName, $this->_bootstrap) == 0) {
 	    $path = substr($scriptName, strlen($this->_bootstrap));
 	}
-	(isset($path) && substr($path, -1, 1) == '/' ? $this->_path = substr($path, 0, -1) : $this->_path = $path);
+	return trim($path, '/');
     }
 
     private function parseBody() {

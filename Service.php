@@ -32,6 +32,7 @@ class Service {
 		$router = new ResourceRouter($resource);
 		$result = $router->resolve($request);
 		if ($result instanceof iResourceModel) {
+		    // TODO: subset matching not yet tested
 		    $result = $resource->matchSubset($request, $result);
 		}
 		return json_encode($resource->mapToArray($result));

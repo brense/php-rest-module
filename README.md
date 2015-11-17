@@ -9,12 +9,12 @@ Usage example:
 	$service->addResource($clientResource);
 
 	$request = Request::current();
-	$request->setBootstrapPath('/service');
+	$request->setBootstrapPath('/service'); // e.g. when the full path is http://www.mydomain.com/service
 	$response = $service->resolve($request);
 	
 	echo $response;
     
-Client:
+Model example:
 
     class Client implements iResourceModel {
 		private $_name = 'foobar';
@@ -26,10 +26,22 @@ Client:
     	public function toArray(){
     		return array('name' => $this->_name);
 		}
+		
+		public function __get($property){
+			// implement
+		}
+		
+		public function __set($property, $value){
+			// implement
+		}
+		
+		public function __isset($property){
+			// implement
+		}
     
     }
     
-ClientController:
+Controller example:
 
     class ClientController implements iResourceController {
 

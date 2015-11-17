@@ -5,7 +5,7 @@ namespace rest;
 class ResourceRouter {
 
     private $_resource;
-    private $_listAllOptions = array('limit', 'sort', 'desc');
+    private $_listQueryOptions = array('limit', 'page', 'sort', 'desc');
 
     public function __construct(Resource $resource) {
 	$this->_resource = $resource;
@@ -22,7 +22,7 @@ class ResourceRouter {
 	    $parameters = array();
 	    switch ($function) {
 		case 'listAll':
-		    $parameters = $this->parseOptions($this->_listAllOptions, $request->parameters);
+		    $parameters = $this->parseOptions($this->_listQueryOptions, $request->parameters);
 		    break;
 		case 'retrieve':
 		case 'replace':

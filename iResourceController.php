@@ -8,11 +8,9 @@ interface iResourceController {
 
     public function retrieve($resourceId);
 
-    public function listAll($limit = 1000, $sort = null, $desc = 0);
-
-    public function find(Array $criteria = array());
-
-    public function replace($resourceId, iResource $resource);
+    public function listAll($limit = 1000, $page = 1, $sort = null, $desc = 0);
+    
+    public function replace(iResource $resource);
 
     public function replaceAll(Array $resources);
 

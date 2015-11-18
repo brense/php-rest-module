@@ -10,6 +10,7 @@ class Resource {
     private $_customRoutes = array();
     private $_subsets = array();
     private $_requestedId;
+    private $_parent;
 
     public function __construct($path, iResourceModel $model, iResourceController $controller) {
 	$this->_path = $path;
@@ -28,35 +29,46 @@ class Resource {
     }
 
     public function matchCustomRoute(Request $request) {
-	$path = substr($request->path, strlen($this->_path));
+	$path = substr($request->path, strpos($request->path, '/'. trim($this->_path, '/')) + strlen('/'. trim($this->_path, '/')));
 	if (strlen($path) > 0) {
 	    if (isset($this->_customRoutes[$request->method]) && in_array($path, $this->_customRoutes[$request->method])) {
 		return $this->_customRoutes[$path];
-	    } else {
-		throw new \Exception('No custom route was found for \'' . $path . '\'');
 	    }
 	}
     }
 
-    public function addSubset($path, $property) {
-	$this->_subsets[$path] = $property;
+    public function addSubset(Resource $resource) {
+	$resource->setParent($this);
+	$this->_subsets[$resource->path] = $resource;
+    }
+    
+    public function hasSubsets(){
+	if(count($this->_subsets) > 0){
+	    return true;
+	}
+	return false;
     }
 
-    public function matchSubset(Request $request, $model) {
-	$path = substr($request->path, strlen($this->_path . '/' . $model->id));
-	if (strlen($path) == 0) {
-	    // if no specific subset is requested, make sure the model will contain all subsets
-	    foreach ($this->_subsets as $property) {
-		$model->$property; // trigger the getter on the subset property
-	    }
-	    return $model;
-	} else {
-	    if (in_array($path, $this->_subsets)) {
-		return $this->_subsets[$path];
-	    } else {
-		throw new \Exception('No subset was found for \'' . $path . '\'');
+    public function matchSubset($requestPath) {
+	$resourcePath = substr($requestPath, strlen($this->_path . $this->_requestedId . '/'));
+	if (strpos($requestPath, $this->_path . $this->_requestedId . '/') === 0 && strlen($resourcePath) > 0) {
+	    $resource = ResourceRouter::matchPathToResources($resourcePath, $this->_subsets);
+	    if (!is_null($resource)) {
+		return $resource;
 	    }
 	}
+	return null;
+    }
+    
+    public function setParent(Resource $resource){
+	$this->_parent = $resource;
+    }
+    
+    public function hasParent(){
+	if(!empty($this->_parent) && !empty($this->_parent->requestedId)){
+	    return true;
+	}
+	return false;
     }
 
     public function setRequestedId($resourceModelId) {

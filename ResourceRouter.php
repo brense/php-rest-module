@@ -5,7 +5,7 @@ namespace rest;
 class ResourceRouter {
 
     private $_resource;
-    private $_listQueryOptions = array('limit', 'page', 'sort', 'desc');
+    private $_listQueryOptions = array('query', 'limit', 'page', 'sort', 'desc');
 
     public function __construct(Resource $resource) {
 	$this->_resource = $resource;
@@ -19,6 +19,10 @@ class ResourceRouter {
 	} else {
 	    $function = $this->translateRequestMethod($request->method, empty($this->_resource->requestedId));
 	    $callback = array($this->_resource->controller, $function);
+	    if($this->_resource->hasParent()){
+		$className = $this->getClassName($this->_resource->parent->model);
+		$request->setQueryParameter($className, $this->_resource->parent->requestedId);
+	    }
 	    $parameters = array();
 	    switch ($function) {
 		case 'listAll':
@@ -35,6 +39,32 @@ class ResourceRouter {
 	    }
 	}
 	return call_user_func_array($callback, $parameters);
+    }
+    
+    public static function matchPathToResources($resourcePath, Array $resources) {
+	$parts = self::trimArray(explode('/', $resourcePath));
+	$last = null;
+	$resource = null;
+	while (count($parts) > 0) {
+	    $path = implode('/', $parts) . '/';
+	    if (isset($resources[$path])) {
+		$resource = $resources[$path];
+		$resource->setRequestedId($last);
+		break;
+	    }
+	    $last = array_pop($parts);
+	}
+	$subset = null;
+	if(!is_null($resource) && $resource->hasSubsets()){
+	    $subset = $resource->matchSubset($resourcePath);
+	}
+	if (!is_null($subset)) {
+	    return $subset;
+	} else if (!is_null($resource)) {
+	    return $resource;
+	} else {
+	    return null;
+	}
     }
 
     private function translateRequestMethod($method, $isBulkRequest = false) {
@@ -61,6 +91,7 @@ class ResourceRouter {
     }
 
     private function parseOptions(Array $names, Array $values) {
+	
 	$options = array();
 	foreach ($names as $name) {
 	    if (isset($values[$name])) {
@@ -70,6 +101,21 @@ class ResourceRouter {
 	    }
 	}
 	return $options;
+    }
+    
+    private function getClassName($class){
+	$arr = explode('\\', get_class($class));
+	return strtolower(array_pop($arr));
+    }
+    
+    private static function trimArray(Array $array){
+	if (strlen(trim($array[count($array) - 1])) == 0) {
+	    unset($array[count($array) - 1]);
+	}
+	if (strlen(trim($array[0])) == 0) {
+	    unset($array[0]);
+	}
+	return $array;
     }
 
 }

@@ -26,15 +26,11 @@ class Service {
     }
 
     public function resolve(Request $request) {
-	$resource = $this->matchResource($request);
+	$resource = $this->matchResource($request->path);
 	if (!empty($resource)) {
 	    try {
 		$router = new ResourceRouter($resource);
 		$result = $router->resolve($request);
-		if ($result instanceof iResourceModel) {
-		    // TODO: subset matching not yet tested
-		    $result = $resource->matchSubset($request, $result);
-		}
 		return json_encode($resource->mapToArray($result));
 	    } catch (\Exception $e) {
 		header(filter_input(INPUT_SERVER, 'SERVER_PROTOCOL') . ' 400 Bad Request');
@@ -46,23 +42,10 @@ class Service {
 	}
     }
 
-    private function matchResource(Request $request) {
-	$parts = explode('/', $request->path);
-	if (strlen(trim($parts[count($parts) - 1])) == 0) {
-	    unset($parts[count($parts) - 1]);
-	}
-	if (strlen(trim($parts[0])) == 0) {
-	    unset($parts[0]);
-	}
-	$last = null;
-	while (count($parts) > 0) {
-	    $path = implode('/', $parts) . '/';
-	    if (isset($this->_resources[$path])) {
-		$resource = $this->_resources[$path];
-		$resource->setRequestedId($last);
-		return $resource;
-	    }
-	    $last = array_pop($parts);
+    private function matchResource($requestPath) {
+	$resource = ResourceRouter::matchPathToResources($requestPath, $this->_resources);
+	if(!is_null($resource)){
+	    return $resource;
 	}
 	return null;
     }

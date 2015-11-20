@@ -71,16 +71,6 @@ class ResourceRouter {
     public function getResource(){
 	return $this->_resource;
     }
-    
-    private function matchCustomRoute(Request $request) {
-	$path = substr($request->path, strpos($request->path, '/'. trim($this->_resource->path, '/')) + strlen('/'. trim($this->_resource->path, '/'))) . '/';
-	if (strlen($path) > 0) {
-	    if (isset($this->_resource->customRoutes[$request->method]) && array_key_exists($path, $this->_resource->customRoutes[$request->method])) {
-		return $this->_resource->customRoutes[$request->method][$path];
-	    }
-	}
-        return false;
-    }
 
     private function translateRequestMethod($method, $isBulkRequest = false) {
 	$single = array(
@@ -103,6 +93,16 @@ class ResourceRouter {
 	} else {
 	    return $bulk[$method];
 	}
+    }
+    
+    private function matchCustomRoute(Request $request) {
+	$path = substr($request->path, strpos($request->path, '/'. trim($this->_resource->path, '/')) + strlen('/'. trim($this->_resource->path, '/'))) . '/';
+	if (strlen($path) > 0) {
+	    if (isset($this->_resource->customRoutes[$request->method]) && array_key_exists($path, $this->_resource->customRoutes[$request->method])) {
+		return $this->_resource->customRoutes[$request->method][$path];
+	    }
+	}
+        return false;
     }
 
     private function parseOptions(Array $names, Array $values) {

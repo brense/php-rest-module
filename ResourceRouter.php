@@ -6,13 +6,40 @@ class ResourceRouter {
 
     private $_resource;
     private $_listQueryOptions = array('query', 'limit', 'page', 'sort', 'desc');
-
-    public function __construct(Resource $resource) {
+    
+    private function __construct(Resource $resource) {
 	$this->_resource = $resource;
+    }
+    
+    public static function matchResource($path, Array $resources) {
+        $last = null;
+        $resource = null;
+        $parts = self::trimArray(explode('/', $path));
+        while (count($parts) > 0) {
+            $fragment = implode('/', $parts) . '/';
+            if (isset($resources[$fragment])) {
+                $resource = $resources[$fragment];
+                break;
+            }
+            $last = array_pop($parts);
+        }
+        if (!empty($last)) {
+            $resource->setRequestedId($last); // TODO: set the id on the resource model!
+        }
+        if (!empty($resource) && $resource->hasSubsets()) {
+            $router = self::matchSubset($resource, $path);
+            if (!empty($router)) {
+                return $router;
+            }
+        }
+        if (!empty($resource)) {
+            return new self($resource);
+        }
+	throw new ResourceNotFoundException('There is no resource at \'' . $path . '\'');
     }
 
     public function resolve(Request $request) {
-	$match = $this->_resource->matchCustomRoute($request);
+	$match = $this->matchCustomRoute($request);
 	if ($match) {
 	    $callback = $match['callback'];
 	    $parameters = $this->parseOptions($match['options'], $request->parameters);
@@ -41,30 +68,18 @@ class ResourceRouter {
 	return call_user_func_array($callback, $parameters);
     }
     
-    public static function matchPathToResources($resourcePath, Array $resources) {
-	$parts = self::trimArray(explode('/', $resourcePath));
-	$last = null;
-	$resource = null;
-	while (count($parts) > 0) {
-	    $path = implode('/', $parts) . '/';
-	    if (isset($resources[$path])) {
-		$resource = $resources[$path];
-		$resource->setRequestedId($last);
-		break;
+    public function getResource(){
+	return $this->_resource;
+    }
+    
+    private function matchCustomRoute(Request $request) {
+	$path = substr($request->path, strpos($request->path, '/'. trim($this->_resource->path, '/')) + strlen('/'. trim($this->_resource->path, '/')));
+	if (strlen($path) > 0) {
+	    if (isset($this->_resource->customRoutes[$request->method]) && in_array($path, $this->_resource->customRoutes[$request->method])) {
+		return $this->_resource->customRoutes[$path];
 	    }
-	    $last = array_pop($parts);
 	}
-	$subset = null;
-	if(!is_null($resource) && $resource->hasSubsets()){
-	    $subset = $resource->matchSubset($resourcePath);
-	}
-	if (!is_null($subset)) {
-	    return $subset;
-	} else if (!is_null($resource)) {
-	    return $resource;
-	} else {
-	    return null;
-	}
+        return false;
     }
 
     private function translateRequestMethod($method, $isBulkRequest = false) {
@@ -91,7 +106,6 @@ class ResourceRouter {
     }
 
     private function parseOptions(Array $names, Array $values) {
-	
 	$options = array();
 	foreach ($names as $name) {
 	    if (isset($values[$name])) {
@@ -108,6 +122,17 @@ class ResourceRouter {
 	return strtolower(array_pop($arr));
     }
     
+    private static function matchSubset($resource, $requestPath){
+        $resourcePath = substr($requestPath, strlen($resource->path . $resource->requestedId . '/'));
+        if (strpos($requestPath, $resource->path . $resource->requestedId . '/') === 0 && strlen($resourcePath) > 0) {
+            $router = self::matchResource($resourcePath, $resource->subsets);
+            if (!empty($router)) {
+                return $router;
+            }
+        }
+        return null;
+    }
+    
     private static function trimArray(Array $array){
 	if (strlen(trim($array[count($array) - 1])) == 0) {
 	    unset($array[count($array) - 1]);
@@ -119,3 +144,5 @@ class ResourceRouter {
     }
 
 }
+
+class ResourceNotFoundException extends \Exception {}

@@ -24,30 +24,20 @@ class Service {
 	    unset($this->_resources[$path]);
 	}
     }
-
+    
     public function resolve(Request $request) {
-	$resource = $this->matchResource($request->path);
-	if (!empty($resource)) {
-	    try {
-		$router = new ResourceRouter($resource);
-		$result = $router->resolve($request);
-		return json_encode($resource->mapToArray($result));
-	    } catch (\Exception $e) {
-		header(filter_input(INPUT_SERVER, 'SERVER_PROTOCOL') . ' 400 Bad Request');
-		return json_encode(array('error' => $e->getMessage()));
-	    }
-	} else {
-	    header(filter_input(INPUT_SERVER, 'SERVER_PROTOCOL') . ' 404 Not Found');
-	    return json_encode(array('error' => 'Resource not found'));
-	}
-    }
-
-    private function matchResource($requestPath) {
-	$resource = ResourceRouter::matchPathToResources($requestPath, $this->_resources);
-	if(!is_null($resource)){
-	    return $resource;
-	}
-	return null;
+        try {
+            $router = ResourceRouter::matchResource($request->path, $this->_resources);
+	    $resource = $router->getResource();
+            $result = $router->resolve($request);
+            return json_encode($resource->mapToArray($result));
+        } catch (ResourceNotFoundException $e) {
+            header(filter_input(INPUT_SERVER, 'SERVER_PROTOCOL') . ' 404 Not Found');
+            return json_encode(array('error' => 'Resource not found'));
+        } catch (\Exception $e) {
+            header(filter_input(INPUT_SERVER, 'SERVER_PROTOCOL') . ' 400 Bad Request');
+            return json_encode(array('error' => $e->getMessage()));
+        }
     }
 
 }

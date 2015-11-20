@@ -28,15 +28,6 @@ class Resource {
 	);
     }
 
-    public function matchCustomRoute(Request $request) {
-	$path = substr($request->path, strpos($request->path, '/'. trim($this->_path, '/')) + strlen('/'. trim($this->_path, '/')));
-	if (strlen($path) > 0) {
-	    if (isset($this->_customRoutes[$request->method]) && in_array($path, $this->_customRoutes[$request->method])) {
-		return $this->_customRoutes[$path];
-	    }
-	}
-    }
-
     public function addSubset(Resource $resource) {
 	$resource->setParent($this);
 	$this->_subsets[$resource->path] = $resource;
@@ -47,17 +38,6 @@ class Resource {
 	    return true;
 	}
 	return false;
-    }
-
-    public function matchSubset($requestPath) {
-	$resourcePath = substr($requestPath, strlen($this->_path . $this->_requestedId . '/'));
-	if (strpos($requestPath, $this->_path . $this->_requestedId . '/') === 0 && strlen($resourcePath) > 0) {
-	    $resource = ResourceRouter::matchPathToResources($resourcePath, $this->_subsets);
-	    if (!is_null($resource)) {
-		return $resource;
-	    }
-	}
-	return null;
     }
     
     public function setParent(Resource $resource){

@@ -73,10 +73,10 @@ class ResourceRouter {
     }
     
     private function matchCustomRoute(Request $request) {
-	$path = substr($request->path, strpos($request->path, '/'. trim($this->_resource->path, '/')) + strlen('/'. trim($this->_resource->path, '/')));
+	$path = substr($request->path, strpos($request->path, '/'. trim($this->_resource->path, '/')) + strlen('/'. trim($this->_resource->path, '/'))) . '/';
 	if (strlen($path) > 0) {
-	    if (isset($this->_resource->customRoutes[$request->method]) && in_array($path, $this->_resource->customRoutes[$request->method])) {
-		return $this->_resource->customRoutes[$path];
+	    if (isset($this->_resource->customRoutes[$request->method]) && array_key_exists($path, $this->_resource->customRoutes[$request->method])) {
+		return $this->_resource->customRoutes[$request->method][$path];
 	    }
 	}
         return false;

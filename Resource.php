@@ -18,8 +18,8 @@ class Resource {
 	$this->_controller = $controller;
     }
 
-    public function addCustomRoute($method, $path, callable $callback, $options) {
-	if(!in_array($this->_customRoutes[$method])){
+    public function addCustomRoute($method, $path, callable $callback, Array $options = array()) {
+	if(!in_array($method, $this->_customRoutes)){
 	    $this->_customRoutes[$method] = array();
 	}
 	$this->_customRoutes[$method][$path] = array(

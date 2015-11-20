@@ -10,18 +10,9 @@ class Service {
 	$this->_resources[$resource->path] = $resource;
     }
 
-    public function getResource($path) {
-	if (!in_array($path, $this->_resources)) {
-	    throw new \Exception('There is no resource registered at path: \'' . $path . '\'');
-	} else {
-	    return $this->_resources[$path];
-	}
-	return null;
-    }
-
-    public function removeResource($path) {
-	if (isset($this->_resources[$path])) {
-	    unset($this->_resources[$path]);
+    public function removeResource(Resource $resource) {
+	if (isset($this->_resources[$resource->path])) {
+	    unset($this->_resources[$resource->path]);
 	}
     }
     

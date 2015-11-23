@@ -64,9 +64,9 @@ class Request {
 	    $contents = file_get_contents('php://input');
 	    $json = json_decode($contents);
 	    if ($json) {
-		$this->_body = $json;
+		return $json;
 	    } else {
-		$this->_body = filter_input_array(INPUT_POST);
+		return filter_input_array(INPUT_POST);
 	    }
 	}
     }

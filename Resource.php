@@ -56,16 +56,15 @@ class Resource {
     }
 
     public function mapToModel($arr) {
-	// If array is associative, map it. Else, loop through it and map it
-	if (array_keys($arr) !== range(0, count($arr) - 1)) {
+	if (is_object($arr) || (is_array($arr) && array_keys($arr) !== range(0, count($arr) - 1))) {
 	    $obj = clone $this->_model;
 	    foreach ($arr as $k => $v) {
-		if (isset($obj->$k)) {
+		if(property_exists($obj, '_' . $k)){
 		    $obj->$k = $v;
 		}
 	    }
 	    return $obj;
-	} else {
+	} else if(is_array($arr)) {
 	    foreach ($arr as &$item) {
 		$item = $this->mapToModel($item);
 	    }

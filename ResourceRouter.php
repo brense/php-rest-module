@@ -24,7 +24,7 @@ class ResourceRouter {
             $last = array_pop($parts);
         }
         if (!empty($last)) {
-            $resource->setRequestedId($last); // TODO: set the id on the resource model!
+            $resource->setRequestedId($last);
         }
         if (!empty($resource) && $resource->hasSubsets()) {
             $router = self::matchSubset($resource, $path);
@@ -62,7 +62,7 @@ class ResourceRouter {
 		    break;
 	    }
 	    if (!empty($request->body)) {
-		$parameters = array($this->_resource->mapToModel($request->body, $this->_resource));
+		$parameters = array($this->_resource->mapToModel($request->body));
 	    }
 	}
 	return call_user_func_array($callback, $parameters);

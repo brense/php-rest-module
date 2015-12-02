@@ -31,13 +31,16 @@ If you use this framework on a subdomain it might be necessary to manually set t
     $request->setBootstrapPath('/mysubbpath/rest');
     
 ### Mapping of requests to resource controller
-`GET` requests are either routed to the `retrieve` or the `listAll` method in your resource controller. For example, if the requested path is `http://mydomain.com/mysubpath/rest/account/342` the `retrieve` method will be called. If the requested path is `http://mydomain.com/mysubpath/rest/account` the `listAll` method will be called.
 
-A `PUT` request will either be routed to the `replace` or the `replaceAll` method. Again, the existance of an id will determine which route is called.
-
-A `POST` request will be routed to the `create` method. If you supply an id on this route it will return an exception `Cannot create a resource with an existing resource ID`.
-
-A `DELETE` request will be routed to the `delete` or the `deleteAll` method. Again based on the existance of an id in the path.
+Request Method | Path | Method | Body
+--- | --- | --- | ---
+`GET` | `/account/[id]` | `retrieve` | empty
+`GET` | `/account` | `listAll` | empty
+`PUT` | `/account/[id]` | `replace` | resource model
+`PUT` | `/account` | `replaceAll` | array or resource models
+`POST` | `/account` | `create` | resource model
+`DELETE` | `/account/[id]` | `delete` | empty
+`DELETE` | `/account` | `deleteAll` | empty
 
 ### Example resource controller
 

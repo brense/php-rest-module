@@ -25,7 +25,7 @@ Custom routes are added as follows:
 You can also register anonymous functions.
 
 ### Setting a custom bootstrap path
-If you use this framework on a subdomain it might be necessary to manually set the `bootstrap path`. For example, if you registered your resource to be found at the path `/account` but your requests actually look like `http://mydomain.com/mysubdomain/rest/account` you should set `/mysubdomain/rest` as your bootstrap path. This is done as follows:
+If you use this framework on a subdomain it might be necessary to manually set the `bootstrap path`. For example, if you registered your resource to be found at the path `/account` but your requests actually look like `http://mydomain.com/mysubdomain/rest/account` you should set `/mysubdomain/rest` as your bootstrap path:
 
     $request = Request::current();
     $request->setBootstrapPath('/mysubdomain/rest');

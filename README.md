@@ -20,7 +20,7 @@ Resources can also contain subsets or custom routes (in theory you can use this 
     
 Custom routes are added as follows:
 
-    $resource->addCustomRoute('GET', 'custom/', array(new OrderController, 'customFunctionName'));
+    $resource->addCustomRoute('GET', 'custom/', array(new OrderController(), 'customFunctionName'));
     
 You can also register anonymous functions.
 

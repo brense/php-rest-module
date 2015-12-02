@@ -37,7 +37,7 @@ A `PUT` request will either be routed to the `replace` or the `replaceAll` metho
 
 A `POST` request will be routed to the `create` method. If you supply an id on this route it will return an exception `Cannot create a resource with an existing resource ID`.
 
-A 'DELETE` request will be routed to the `delete` or the `deleteAll` method. Again based on the existance of an id in the path.
+A `DELETE` request will be routed to the `delete` or the `deleteAll` method. Again based on the existance of an id in the path.
 
 ### Example resource controller
 

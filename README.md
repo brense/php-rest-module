@@ -28,7 +28,7 @@ You can also register anonymous functions.
 If you use this framework on a subdomain it might be necessary to manually set the `bootstrap path` e.g. the location where your `index.php` file is, or where you call the `$request = Request::current();`. For example, if your `index.php` is located in `http://mydomain.com/mysubpath/rest` you should do the following after getting the current request:
 
     $request = Request::current();
-    $request->setBootstrapPath('/mysubbpath/rest');
+    $request->setBootstrapPath('/mysubpath/rest');
     
 ### Mapping of requests to resource controller
 

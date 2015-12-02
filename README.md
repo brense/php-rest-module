@@ -48,7 +48,7 @@ A `DELETE` request will be routed to the `delete` or the `deleteAll` method. Aga
     		return new Account();
     	}
       
-    	public function listAll() {
+    	public function listAll($query = null, $limit = 1000, $page = 1, $sort = null, $desc = 0) {
     		// get all accounts from database
     	}
       

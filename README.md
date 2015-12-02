@@ -32,7 +32,7 @@ If you use this framework on a subdomain it might be necessary to manually set t
     
 ### Mapping of requests to resource controller
 
-Request Method | Path | Method | Body
+Request method | Request path | Controller method | Request body
 --- | --- | --- | ---
 `GET` | `/account/[id]` | `retrieve` | empty
 `GET` | `/account` | `listAll` | empty

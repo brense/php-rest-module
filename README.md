@@ -13,12 +13,12 @@ The `Account` class should implement the `iResourceModel` interface and the `Acc
     $service->resolve($request);
     
 ### Subsets and custom routes
-Resources can also contain subsets or custom routes (in theory you can use this framework as a 'normal' router, but that is not the intention of this framework). To register a subset, add a new resource to the existing one:
+Resources can also contain subsets or custom routes (in theory you can use this framework as a 'normal' router, but that is not the intention of this framework). To register a subset, add a new resource to an existing one:
 
     $subset = new Resource('orders/', new Order(), new OrderController());
     $resource->addSubset($subset);
     
-You can now retrieve subsets for an account using the path `/account/[id]/orders`. Custom routes are added as follows:
+You can now retrieve orders for an account using the path `/account/[id]/orders`. Custom routes are added as follows:
 
     $subset->addCustomRoute('GET', 'custom/', array(new OrderController(), 'customFunctionName'));
     

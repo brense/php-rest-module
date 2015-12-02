@@ -1,5 +1,5 @@
-# REST-framework
-A tiny framework to quickly create a REST API in PHP
+# PHP REST module
+This module is a tiny framework to quickly create a REST API in PHP
 
 To use this framework, simply create a new resource and register it with a new service:
     

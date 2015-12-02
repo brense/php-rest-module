@@ -31,6 +31,7 @@ If you use this framework on a subdomain it might be necessary to manually set t
     $request->setBootstrapPath('/mysubpath/rest');
     
 ### Mapping of requests to resource controller
+Typical REST implementation: https://en.wikipedia.org/wiki/Representational_state_transfer#Example
 
 Request method | Request path | Controller method | Request body
 --- | --- | --- | ---

@@ -18,9 +18,9 @@ Resources can also contain subsets or custom routes (in theory you can use this 
     $subset = new Resource('orders/', new Order(), new OrderController());
     $resource->addSubset($subset);
     
-Custom routes are added as follows:
+You can now retrieve subsets for an account using the path `/account/[id]/orders`. Custom routes are added as follows:
 
-    $resource->addCustomRoute('GET', 'custom/', array(new OrderController(), 'customFunctionName'));
+    $subset->addCustomRoute('GET', 'custom/', array(new OrderController(), 'customFunctionName'));
     
 You can also register anonymous functions.
 

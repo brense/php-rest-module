@@ -19,7 +19,7 @@ class Resource {
     }
 
     public function addCustomRoute($method, $path, callable $callback, Array $options = array()) {
-	if(!in_array($method, $this->_customRoutes)){
+	if(!array_key_exists($method, $this->_customRoutes)){
 	    $this->_customRoutes[$method] = array();
 	}
 	$this->_customRoutes[$method][$path] = array(
